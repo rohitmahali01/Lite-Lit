@@ -1,0 +1,27 @@
+:root {
+    --primary-color: #10B981;
+    --secondary-color: #3B82F6;
+    --bg-color: #F9FAFB;
+}
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+}
+.step-card {
+    background: white;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+.btn-primary {
+    background-color: var(--primary-color);
+    transition: transform 0.1s;
+}
+.btn-primary:hover {
+    background-color: #059669;
+    transform: translateY(-1px);
+}
+
+.input-field {
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    padding: 10px;
+}
