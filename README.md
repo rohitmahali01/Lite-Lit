@@ -1,18 +1,20 @@
 # Lite-Lit
 Develop a technology-driven solution that helps users calculate, understand, and file income tax seamlessly. Use intelligent document processing and natural language understanding to extract data from inputs, compare tax regimes, and guide users step-by-step while ensuring high data security.
 
-# Tax Calculator with PDF Parsing
+# Smart Tax Platform with AI Document Analysis
 
-This application now includes **real PDF parsing** using PyMuPDF instead of simulation.
+This is an intelligent tax calculation platform for India that features a multi-step, multilingual (English & Hindi) user interface and an AI-powered document analysis engine using **Google Gemini**.
+
+Users can upload their tax documents (like Form 16), and the application's AI backend will analyze the document to extract key financial details, simplifying the data entry process.
 
 ## Setup Instructions
 
 ### 1. Install Python Dependencies
 
-First, make sure you have Python 3.7+ installed, then install PyMuPDF:
+Make sure you have Python 3.7+ installed. Then, install the required libraries:
 
 ```bash
-pip install PyMuPDF
+pip install PyMuPDF google-generativeai
 ```
 
 ### 2. Start the PDF Parser Server
@@ -150,5 +152,7 @@ fintech tax/new/
 - CORS is enabled for local development
 - Files are processed in temporary storage and cleaned up automatically
 - Real-time parsing status is shown in the frontend
+
+Enjoy automated tax document processing! 🚀📄
 
 Enjoy automated tax document processing! 🚀📄
