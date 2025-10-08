@@ -1,81 +1,137 @@
-// js/taxCalculator.js
-import { state } from './state.js';
+// Tax Calculator for Indian Income Tax (FY 2024-25)
 
-function calculateOldRegimeTax(grossSalary, interestIncome, totalDeductions) {
-    const standardDeduction = 50000;
-    const grossTotalIncome = grossSalary + interestIncome;
-    const incomeAfterStandardDeduction = Math.max(0, grossTotalIncome - standardDeduction);
-    const taxableIncome = Math.max(0, incomeAfterStandardDeduction - totalDeductions);
+function calculateTaxes() {
+    const data = state.userData;
+    
+    // Gross total income
+    const grossTotalIncome = parseFloat(data.grossSalary || 0) + parseFloat(data.interestIncome || 0);
+    
+    // Calculate HRA exemption for Old Regime
+    const basicSalary = parseFloat(data.basicSalary || 0);
+    const hraComponent = parseFloat(data.hraComponent || 0);
+    const rentPaid = parseFloat(data.rentPaid || 0);
+    const isMetro = data.isMetro === 'true';
+    
+    // HRA exemption is minimum of:
+    // 1. Actual HRA received
+    // 2. Rent paid minus 10% of basic salary
+    // 3. 50% of basic (metro) or 40% of basic (non-metro)
+    const hraPercentage = isMetro ? 0.5 : 0.4;
+    const rentDeduction = Math.max(0, rentPaid - (0.10 * basicSalary));
+    const hraExemption = Math.min(hraComponent, rentDeduction, basicSalary * hraPercentage);
+    
+    // Professional tax deduction
+    const professionalTax = Math.min(parseFloat(data.professionalTax || 0), 2500);
+    
+    // 80C deduction
+    const basic80c = Math.min(parseFloat(data.basic80c || 0), 150000);
+    
+    // Interest income deduction under 80TTA
+    const interestDeduction80TTA = Math.min(parseFloat(data.interestIncome || 0), 10000);
+    
+    // OLD REGIME CALCULATION
+    const oldRegimeDeductions = hraExemption + professionalTax + basic80c + interestDeduction80TTA + TAX_CONSTANTS.STANDARD_DEDUCTION;
+    const oldNetTaxableIncome = Math.max(0, grossTotalIncome - oldRegimeDeductions);
+    const oldTaxBeforeRebate = calculateTaxOnIncome(oldNetTaxableIncome, 'old', data.age);
+    const oldRebate = oldNetTaxableIncome <= 500000 ? Math.min(12500, oldTaxBeforeRebate) : 0;
+    const oldTotalTax = Math.max(0, oldTaxBeforeRebate - oldRebate) * (1 + TAX_CONSTANTS.CESS_RATE);
+    
+    // NEW REGIME CALCULATION (Higher standard deduction, no other deductions)
+    const newRegimeDeductions = TAX_CONSTANTS.STANDARD_DEDUCTION; // Standard deduction is same for both now
+    const newNetTaxableIncome = Math.max(0, grossTotalIncome - newRegimeDeductions);
+    const newTaxBeforeRebate = calculateTaxOnIncome(newNetTaxableIncome, 'new', data.age);
+    const newRebate = newNetTaxableIncome <= 700000 ? Math.min(25000, newTaxBeforeRebate) : 0;
+    const newTotalTax = Math.max(0, newTaxBeforeRebate - newRebate);
+    
+    // Store calculation results
+    state.taxCalculation = {
+        old: {
+            grossTotalIncome,
+            deductions: oldRegimeDeductions,
+            netTaxableIncome: oldNetTaxableIncome,
+            taxBeforeRebate: oldTaxBeforeRebate,
+            rebate: oldRebate, // Rebate is applied before cess
+            totalTax: oldTotalTax,
+            detail: {
+                hraExemption,
+                professionalTax,
+                old_80c_deduction: basic80c,
+                interestDeduction80TTA,
+                standardDeduction: 50000
+            }
+        },
+        new: {
+            grossTotalIncome,
+            deductions: newRegimeDeductions,
+            netTaxableIncome: newNetTaxableIncome,
+            taxBeforeRebate: newTaxBeforeRebate,
+            rebate: newRebate,
+            totalTax: Math.round(newTotalTax),
+            detail: {
+                standardDeduction: 75000
+            }
+        }
+    };
+    
+    return state.taxCalculation;
+}
+
+function calculateTaxOnIncome(income, regime, age = 30) {
+    if (income <= 0) return 0;
     
     let tax = 0;
-    if (taxableIncome <= 250000) tax = 0;
-    else if (taxableIncome <= 500000) tax = (taxableIncome - 250000) * 0.05;
-    else if (taxableIncome <= 1000000) tax = 12500 + (taxableIncome - 500000) * 0.20;
-    else tax = 12500 + 100000 + (taxableIncome - 1000000) * 0.30;
+    const isOld = regime === 'old';
+    const isSenior = age >= 60;
+    const isSuperSenior = age >= 80;
     
-    const rebate87A = (taxableIncome <= 500000) ? Math.min(tax, 12500) : 0;
-    tax = Math.max(0, tax - rebate87A);
-    const cess = tax * 0.04;
-    const totalTax = tax + cess;
+    if (isOld) {
+        // Old regime tax slabs (FY 2024-25)
+        let exemptionLimit = 250000;
+        if (isSuperSenior) exemptionLimit = 500000;
+        else if (isSenior) exemptionLimit = 300000;
+        
+        if (income > exemptionLimit) {
+            // 5% on income from exemption limit to 5,00,000
+            tax += Math.min(income - exemptionLimit, 500000 - exemptionLimit) * 0.05;
+        }
+        if (income > 500000) {
+            // 20% on income from 5,00,001 to 10,00,000
+            tax += Math.min(income - 500000, 500000) * 0.20;
+        }
+        if (income > 1000000) {
+            // 30% on income above 10,00,000
+            tax += (income - 1000000) * 0.30;
+        }
+    } else {
+        // New regime tax slabs (FY 2024-25)
+        if (income > 300000) {
+            // 5% on income from 3,00,001 to 6,00,000
+            tax += Math.min(income - 300000, 300000) * 0.05;
+        }
+        if (income > 600000) {
+            // 10% on income from 6,00,001 to 9,00,000
+            tax += Math.min(income - 600000, 300000) * 0.10;
+        }
+        if (income > 900000) {
+            // 15% on income from 9,00,001 to 12,00,000
+            tax += Math.min(income - 900000, 300000) * 0.15;
+        }
+        if (income > 1200000) {
+            // 20% on income from 12,00,001 to 15,00,000
+            tax += Math.min(income - 1200000, 300000) * 0.20;
+        }
+        if (income > 1500000) {
+            // 30% on income above 15,00,000
+            tax += (income - 1500000) * 0.30;
+        }
+    }
     
-    // Note: Surcharge logic was simplified as it's not applicable at this income level.
-    return {
-        grossTotalIncome, standardDeduction, totalDeductions, taxableIncome,
-        taxBeforeRebate: Math.round(tax + rebate87A), rebate87A: Math.round(rebate87A),
-        taxAfterRebate: Math.round(tax), cess: Math.round(cess), totalTax: Math.round(totalTax)
-    };
+    // Cess is applied after rebate, so we return the tax before cess here.
+    // The main function will apply cess.
+    return tax;
 }
 
-function calculateNewRegimeTax(grossSalary, interestIncome) {
-    const standardDeduction = 75000;
-    const grossTotalIncome = grossSalary + interestIncome;
-    const taxableIncome = Math.max(0, grossTotalIncome - standardDeduction);
-    
-    let tax = 0;
-    if (taxableIncome <= 300000) tax = 0;
-    else if (taxableIncome <= 700000) tax = (taxableIncome - 300000) * 0.05;
-    else if (taxableIncome <= 1000000) tax = 20000 + (taxableIncome - 700000) * 0.10;
-    else if (taxableIncome <= 1200000) tax = 50000 + (taxableIncome - 1000000) * 0.15;
-    else if (taxableIncome <= 1500000) tax = 80000 + (taxableIncome - 1200000) * 0.20;
-    else tax = 140000 + (taxableIncome - 1500000) * 0.30;
-
-    const rebate87A = (taxableIncome <= 700000) ? Math.min(tax, 25000) : 0;
-    tax = Math.max(0, tax - rebate87A);
-    const cess = tax * 0.04;
-    const totalTax = tax + cess;
-
-    return {
-        grossTotalIncome, standardDeduction, totalDeductions: 0, taxableIncome,
-        taxBeforeRebate: Math.round(tax + rebate87A), rebate87A: Math.round(rebate87A),
-        taxAfterRebate: Math.round(tax), cess: Math.round(cess), totalTax: Math.round(totalTax)
-    };
-}
-
-function calculateHraExemption(rentPaid, hraReceived, basicSalary, daComponent, isMetro) {
-    if (rentPaid === 0 || hraReceived === 0) return 0;
-    const salaryForHRA = basicSalary + daComponent;
-    const metroPercent = isMetro ? 0.50 : 0.40;
-    
-    const actual = hraReceived;
-    const percentOfBasic = salaryForHRA * metroPercent;
-    const rentMinusTenPercent = Math.max(0, rentPaid - (salaryForHRA * 0.10));
-    return Math.min(actual, percentOfBasic, rentMinusTenPercent);
-}
-
-export function calculateTaxes() {
-    const { userData } = state;
-    const hraExemption = calculateHraExemption(userData.rentPaid, userData.hraComponent, userData.basicSalary, userData.daComponent, userData.isMetro);
-    const total80C = Math.min(150000, userData.basic80c + userData.licPremium);
-    const total80TTA = (userData.age < 60) ? Math.min(10000, userData.interestIncome) : 0;
-    const total80CCD1B = Math.min(50000, userData.npsContribution);
-    
-    const totalDeductions = total80C + userData.professionalTax + userData.lta + hraExemption + userData.healthInsurance + userData.educationLoanInterest + total80TTA + total80CCD1B;
-
-    return {
-        old: calculateOldRegimeTax(userData.grossSalary, userData.interestIncome, totalDeductions),
-        new: calculateNewRegimeTax(userData.grossSalary, userData.interestIncome),
-        tdsCredit: userData.tds_26as,
-        hraExemption: Math.round(hraExemption),
-        total80C, total80TTA, total80CCD1B
-    };
+// Export for global access
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { calculateTaxes, calculateTaxOnIncome };
 }
