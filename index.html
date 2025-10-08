@@ -3,27 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Tax Platform: Priya's Journey</title>
+    <title>Smart Tax Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="p-4 sm:p-8 min-h-screen">
-
-    <header class="max-w-4xl mx-auto mb-8 flex justify-between items-center">
-        <h1 class="text-3xl font-bold text-gray-800">Smart Tax Platform</h1>
-        <div class="flex items-center space-x-4">
-            <select id="language-select" class="p-2 border border-gray-300 rounded-lg text-sm">
-                <option value="en">English</option>
-                <option value="hi">हिन्दी (Hindi)</option>
-                <option value="mr">मराठी (Marathi)</option>
-            </select>
+<body class="bg-gradient-to-br from-emerald-50 to-blue-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div id="app">
+            <!-- Main application content will be rendered here -->
         </div>
-    </header>
+    </div>
 
-    <main id="app-container" class="max-w-4xl mx-auto step-card p-6 sm:p-10 rounded-xl">
-        </main>
+    <!-- Chatbot Widget -->
+    <div id="chatbot-widget" class="fixed bottom-6 right-6 z-50">
+        <button id="open-chat" data-action="open-chat" class="bg-emerald-600 hover:bg-emerald-700 text-white p-4 rounded-full shadow-xl transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-emerald-500 focus:ring-opacity-50">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+            </svg>
+        </button>
 
-    <script type="module" src="js/main.js"></script>
+        <!-- Chat Popup -->
+        <div id="chatbot-popup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4" style="display: none;">
+            <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl h-96 flex flex-col">
+                <div class="bg-emerald-600 text-white p-4 rounded-t-xl flex justify-between items-center">
+                    <h3 class="font-bold text-lg">Tax Assistant</h3>
+                    <button data-action="close-chat" class="text-white hover:text-gray-200 transition duration-150">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div id="chatbot-messages" class="flex-1 p-4 overflow-y-auto space-y-3">
+                    <!-- Messages will be added dynamically -->
+                </div>
+                <div class="p-4 border-t">
+                    <input type="text" id="chatbot-input" placeholder="Ask a question..." class="w-full p-3 border border-gray-300 rounded-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 transition duration-150">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript files in proper order -->
+    <script src="config/api-config.js"></script>
+    <script src="js/translations.js"></script>
+    <script src="state.js"></script>
+    <script src="taxCalculator.js"></script>
+    <script src="app.js"></script>
+    
+    <!-- Load chatbot module -->
+    <script type="module">
+        import { toggleChatbot, handleChatInput, promptChatbot } from './js/chatbot.js';
+        
+        // Make functions globally available
+        window.toggleChatbot = toggleChatbot;
+        window.handleChatInput = handleChatInput;
+        window.promptChatbot = promptChatbot;
+        
+        // Set the global variables for app.js
+        setTimeout(() => {
+            if (typeof window.setGlobalChatbotFunctions === 'function') {
+                window.setGlobalChatbotFunctions(toggleChatbot, handleChatInput, promptChatbot);
+            }
+        }, 100);
+        
+        console.log('Chatbot module loaded and functions set globally');
+    </script>
 </body>
 </html>
