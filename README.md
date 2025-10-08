@@ -134,6 +134,9 @@ Upload and parse a PDF file.
 
 ## File Structure
 
+<img width="376" height="572" alt="image" src="https://github.com/user-attachments/assets/d83c0c1b-eafd-4fb9-8264-577fad8b4d7f" />
+
+
 ```
 fintech tax/new/
 ├── pdf_parser.py           # PyMuPDF backend server
