@@ -1,27 +1,155 @@
-:root {
-    --primary-color: #10B981;
-    --secondary-color: #3B82F6;
-    --bg-color: #F9FAFB;
-}
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-color);
-}
+/* Custom styles for the Smart Tax Platform */
+
 .step-card {
     background: white;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
+
+.step-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
 .btn-primary {
-    background-color: var(--primary-color);
-    transition: transform 0.1s;
+    background: linear-gradient(135deg, #059669, #0d9488);
+    border: none;
+    transition: all 0.3s ease;
 }
+
 .btn-primary:hover {
-    background-color: #059669;
+    background: linear-gradient(135deg, #047857, #0f766e);
     transform: translateY(-1px);
 }
 
-.input-field {
-    border: 1px solid #D1D5DB;
-    border-radius: 8px;
-    padding: 10px;
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Chat styles */
+.chat-message {
+    padding: 12px 16px;
+    border-radius: 12px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.chat-user {
+    background: #059669;
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+.chat-assistant {
+    background: #f3f4f6;
+    color: #374151;
+    align-self: flex-start;
+}
+
+.chat-api-key-input {
+    background: #fef3c7;
+    padding: 16px;
+    border-radius: 12px;
+    border: 2px solid #f59e0b;
+    margin: 8px 0;
+}
+
+.chat-api-key-input input {
+    margin-bottom: 8px;
+}
+
+#chatbot-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+    
+    .step-card {
+        padding: 1rem;
+    }
+    
+    .text-6xl {
+        font-size: 2.5rem;
+    }
+    
+    .text-4xl {
+        font-size: 2rem;
+    }
+    
+    .grid-cols-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Input focus states */
+input:focus, select:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
+/* Table styling */
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+tr:hover {
+    background-color: #f9fafb;
+}
+
+/* Button animations */
+button {
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #059669;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #047857;
 }
