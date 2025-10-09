@@ -157,5 +157,3 @@ fintech tax/new/
 - Real-time parsing status is shown in the frontend
 
 Enjoy automated tax document processing! 🚀📄
-
-Enjoy automated tax document processing! 🚀📄
