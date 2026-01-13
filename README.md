@@ -6,6 +6,8 @@ Develop a technology-driven solution that helps users calculate, understand, and
 This is an intelligent tax calculation platform for India that features a multi-step, multilingual (English & Hindi) user interface and an AI-powered document analysis engine using **Google Gemini**.
 
 Users can upload their tax documents (like Form 16), and the application's AI backend will analyze the document to extract key financial details, simplifying the data entry process.
+<img width="1088" height="807" alt="Screenshot 2025-10-08 080236" src="https://github.com/user-attachments/assets/f8af8123-8fb5-4146-9fb7-300757b98fcd" />
+
 
 ## Setup Instructions
 
