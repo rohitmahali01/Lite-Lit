@@ -7,6 +7,10 @@ This is an intelligent tax calculation platform for India that features a multi-
 
 Users can upload their tax documents (like Form 16), and the application's AI backend will analyze the document to extract key financial details, simplifying the data entry process.
 <img width="1088" height="807" alt="Screenshot 2025-10-08 080236" src="https://github.com/user-attachments/assets/f8af8123-8fb5-4146-9fb7-300757b98fcd" />
+<img width="1919" height="987" alt="Screenshot 2025-10-08 072917" src="https://github.com/user-attachments/assets/b89e6401-d087-4c59-8061-3b794c505c95" />
+<img width="1909" height="983" alt="Screenshot 2025-10-08 072033" src="https://github.com/user-attachments/assets/541dbbc2-02c5-4c8e-a9c4-26c122f23d79" />
+<img width="418" height="523" alt="Screenshot 2025-10-07 222432" src="https://github.com/user-attachments/assets/34f4adf7-c4df-4606-bb3a-72fe25f1a28b" />
+
 
 
 ## Setup Instructions
