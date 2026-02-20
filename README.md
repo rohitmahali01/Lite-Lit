@@ -170,4 +170,4 @@ Meet the OGs behind the Lite Lit. We are a team of passionate developers who col
 -   **Sahil Singh** - [LinkedIn Profile](https://www.linkedin.com/in/sahil-singh-51875b361/)
 -   **Rohit Kumar** - [LinkedIn Profile](https://www.linkedin.com/in/rkgupta3334/)
 
-Enjoy automated tax document processing! 🚀📄
+Enjoy automated tax document processing! 
